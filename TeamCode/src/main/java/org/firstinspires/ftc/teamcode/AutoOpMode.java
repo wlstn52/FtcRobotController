@@ -21,7 +21,6 @@ import org.firstinspires.ftc.vision.opencv.ImageRegion;
 import org.firstinspires.ftc.vision.opencv.PredominantColorProcessor;
 
 @Autonomous(name="AutoOpMode", group="Auto")
-@Disabled
 public class AutoOpMode extends OpMode {
     enum Status {
         IDLE,
@@ -32,7 +31,7 @@ public class AutoOpMode extends OpMode {
     }
     Status status = Status.IDLE;
     private ElapsedTime runtime = new ElapsedTime();
-    private MotorSystem motorSystem;
+//    private MotorSystem motorSystem;
 
     // Hardware - DC Motors
     private DcMotor frontLeftDrive = null;
