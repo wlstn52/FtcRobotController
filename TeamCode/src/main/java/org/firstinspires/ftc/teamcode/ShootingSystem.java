@@ -24,7 +24,7 @@ public class ShootingSystem implements Task{
         runtime = timer;
     }
     public void init(){
-        shootingMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shootingMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         shootingMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         liftingServo.setDirection(Servo.Direction.FORWARD);
     }

@@ -26,7 +26,10 @@ public class testShooting extends LinearOpMode {
         shootingSystem.motorStart(0.8);
         sleep(2000);
         shootingSystem.shoot();
-        sleep(2000);
+        double a = runtime.seconds();
+        while(a + 3 >= runtime.seconds()){
+            shootingSystem.process();
+        }
         shootingSystem.motorStop();
         sleep(1000);
     }
