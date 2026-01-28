@@ -23,14 +23,14 @@ public class testShooting extends LinearOpMode {
         shootingSystem = new ShootingSystem(testMotor, liftingServo, runtime);
         shootingSystem.init();
         waitForStart();
-        shootingSystem.motorStart(0.8);
+        shootingSystem.startMotor(0.8);
         sleep(2000);
         shootingSystem.shoot();
         double a = runtime.seconds();
         while(a + 3 >= runtime.seconds()){
             shootingSystem.process();
         }
-        shootingSystem.motorStop();
+        shootingSystem.stopMotor();
         sleep(1000);
     }
 }

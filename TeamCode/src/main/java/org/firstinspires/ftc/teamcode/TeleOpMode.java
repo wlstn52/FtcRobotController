@@ -1,10 +1,17 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.util.Size;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 public class TeleOpMode extends OpMode {
     private ElapsedTime runtime = new ElapsedTime();
@@ -19,6 +26,10 @@ public class TeleOpMode extends OpMode {
     private ShootingSystem shootingSystem;
     private IntakeSystem intakeSystem;
 
+    // 비전 관련
+    private WebcamName webcam;
+    private VisionPortal visionPortal;
+    private AprilTagProcessor aprilTagProcessor;
 
     @Override
     public void init(){
@@ -28,6 +39,7 @@ public class TeleOpMode extends OpMode {
         intakeMotor = hardwareMap.get(DcMotor.class, "intake_motor");
         liftingServo = hardwareMap.get(Servo.class, "lifting_servo");
         sortingServo = hardwareMap.get(Servo.class, "sorting_servo");
+        webcam = hardwareMap.get(WebcamName.class, "Webcam 1");
 
         backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -82,8 +94,18 @@ public class TeleOpMode extends OpMode {
         telemetry.update();
     }
 
+    // 비전 관련 초기 설정
+    private void visionInit(){
+        aprilTagProcessor = AprilTagProcessor.easyCreateWithDefaults();
+        visionPortal = new VisionPortal.Builder()
+                .setCamera(webcam)
+                .setCameraResolution(new Size(640, 480))
+                .enableLiveView(true)
+                .addProcessor(aprilTagProcessor).build();
+    }
+
     void gamepad_control(){
-        double axial1   = -gamepad1.left_stick_y;
+        double axial1   =  -gamepad1.left_stick_y;
         double axial2   =  -gamepad1.right_stick_y;
 
         backLeftDrive.setPower(axial1);
@@ -97,6 +119,12 @@ public class TeleOpMode extends OpMode {
         if(gamepad1.y && !shootingSystem.isBusy()) {
             intakeSystem.revolveSorting(Servo.Direction.REVERSE);
         }
+        if(gamepad1.b){
+            // 에이프릴 태그를 기반으로 하여 위치 조정
+            // b를 한 번 더 누르면 취소 되도록
+
+
+        }
     }
     // drive hub 메세지
     void telemetry_message(){
@@ -109,5 +137,11 @@ public class TeleOpMode extends OpMode {
         telemetry.addData("Front Slot", intakeSystem.getFront());
 
         telemetry.update();
+    }
+
+    void getMovement(){
+        for(AprilTagDetection detection : aprilTagProcessor.getDetections()){
+            if(detection.metadata == null) continue;
+        }
     }
 }
