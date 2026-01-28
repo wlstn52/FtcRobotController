@@ -10,6 +10,7 @@ public class ShootingSystem implements Task{
     private Servo liftingServo;
     private ElapsedTime runtime;
     private double shooting_time;
+    private boolean motorOn = false;
     enum Status{
             IDLE,
         SHOOTING,
@@ -30,9 +31,11 @@ public class ShootingSystem implements Task{
     }
     // 발사 모터를 가동
     public void startMotor(double power) {
+        motorOn = true;
         shootingMotor.setPower(power);
     }
     public void stopMotor(){
+        motorOn = false;
         shootingMotor.setPower(0);
     }
     // 발사 코드
@@ -57,5 +60,5 @@ public class ShootingSystem implements Task{
     public boolean isBusy(){
         return status == Status.IDLE;
     }
-    public boolean isMotorOn() { return shootingMotor.getPower() > 0.0; }
+    public boolean isMotorOn() { return motorOn; }
 }

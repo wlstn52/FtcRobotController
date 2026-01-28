@@ -119,13 +119,13 @@ public class TeleOpMode extends OpMode {
 
         backLeftDrive.setPower(axial1);
         backRightDrive.setPower(axial2);
-        if(input.aPressed() && shootingSystem.isBusy()){
+        if(input.aPressed() && !shootingSystem.isBusy()){
             shootingSystem.shoot();
         }
-        if(input.lbumperPressed() && shootingSystem.isBusy()) {
+        if(input.lbumperPressed() && !shootingSystem.isBusy()) {
             intakeSystem.revolveSorting(Servo.Direction.FORWARD);
         }
-        if(input.rbumperPressed() && shootingSystem.isBusy()) {
+        if(input.rbumperPressed() && !shootingSystem.isBusy()) {
             intakeSystem.revolveSorting(Servo.Direction.REVERSE);
         }
         if(input.xPressed()){
