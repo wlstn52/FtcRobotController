@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import static org.firstinspires.ftc.teamcode.Robot_Configure.INTAKE_MOTOR_POWER;
+import static org.firstinspires.ftc.teamcode.Robot_Configure.SHOOTING_MOTOR_POWER;
 
 import android.util.Size;
 
@@ -8,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -34,6 +36,8 @@ public class TeleOpMode extends OpMode {
     private WebcamName webcam;
     private VisionPortal visionPortal;
     private AprilTagProcessor aprilTagProcessor;
+
+    private final GamepadInput input = new GamepadInput(gamepad1);
 
     @Override
     public void init(){
@@ -112,16 +116,16 @@ public class TeleOpMode extends OpMode {
 
         backLeftDrive.setPower(axial1);
         backRightDrive.setPower(axial2);
-        if(gamepad1.aWasPressed() && shootingSystem.isBusy()){
+        if(input.aPressed() && shootingSystem.isBusy()){
             shootingSystem.shoot();
         }
-        if(gamepad1.leftBumperWasPressed() && shootingSystem.isBusy()) {
+        if(input.lbumperPressed() && shootingSystem.isBusy()) {
             intakeSystem.revolveSorting(Servo.Direction.FORWARD);
         }
-        if(gamepad1.rightBumperWasPressed() && shootingSystem.isBusy()) {
+        if(input.rbumperPressed() && shootingSystem.isBusy()) {
             intakeSystem.revolveSorting(Servo.Direction.REVERSE);
         }
-        if(gamepad1.xWasPressed()){
+        if(input.xPressed()){
             // 정렬 모터 turn on / turn off
             if(intakeSystem.isMotorOn()){
                 intakeSystem.startMotor(INTAKE_MOTOR_POWER);
@@ -129,10 +133,10 @@ public class TeleOpMode extends OpMode {
                 intakeSystem.stopMotor();
             }
         }
-        if(gamepad1.yWasPressed()){
+        if(input.yPressed()){
             // 발사 모터 turn on / turn off
             if(shootingSystem.isMotorOn()){
-                shootingSystem.startMotor(INTAKE_MOTOR_POWER);
+                shootingSystem.startMotor(SHOOTING_MOTOR_POWER);
             }else{
                 shootingSystem.stopMotor();
             }
@@ -148,7 +152,6 @@ public class TeleOpMode extends OpMode {
         telemetry.addData("Motor Power", String.format("Left: %4.2f Right: %4.2f", (float) backLeftDrive.getPower(), (float) backRightDrive.getPower()));
         telemetry.addData("Shooting System", shootingSystem.status);
         telemetry.addData("Shooting Motor", shootingMotorStatus);
-        telemetry.addData("Intaking System", shootingSystem.status);
         telemetry.addData("Intaking Motor", intakingMotorStatus);
         telemetry.addData("Front Slot", intakeSystem.getFront());
 
@@ -158,6 +161,68 @@ public class TeleOpMode extends OpMode {
     void getMovement(){
         for(AprilTagDetection detection : aprilTagProcessor.getDetections()){
             if(detection.metadata == null) continue;
+            if(detection.id != 24 && detection.id != 20) continue; // 우리가 원하는 건, 골대를 보고 위치를 잡는 것.
+
+
         }
     }
+}
+
+// reference : https://github.com/cporter/ftc_app/blob/vv/autonomous-testing/TeamCode/src/main/java/com/suitbots/vv/Controller.java
+class GamepadInput{
+    private Gamepad gamepad;
+    private int x, y, a, b;
+    private int left_bumper, right_bumper;
+    GamepadInput(Gamepad gamepad){
+        this.gamepad = gamepad;
+        x = 0;
+        y = 0;
+        a = 0;
+        b = 0;
+        left_bumper = 0;
+        right_bumper = 0;
+    }
+    public void update() {
+        if (gamepad.x){
+            x++;
+        }else{
+            x = 0;
+        }
+        if(gamepad.y){
+            y++;
+        }else{
+            y = 0;
+        }
+        if(gamepad.a){
+            a++;
+        }else{
+            a = 0;
+        }
+        if(gamepad.b){
+            b++;
+        }else{
+            b = 0;
+        }
+
+        if(gamepad.left_bumper){
+            left_bumper++;
+        }else{
+            left_bumper = 0;
+        }
+
+        if(gamepad.left_bumper){
+            right_bumper++;
+        }else{
+            right_bumper = 0;
+        }
+    }
+
+    public boolean xPressed(){ return x == 1;}
+    public boolean yPressed(){ return y == 1;}
+    public boolean aPressed(){ return a == 1;}
+    public boolean bPressed(){ return b == 1;}
+
+    public boolean lbumperPressed() {return left_bumper == 1;}
+    public boolean rbumperPressed() {return right_bumper == 1;}
+
 }
