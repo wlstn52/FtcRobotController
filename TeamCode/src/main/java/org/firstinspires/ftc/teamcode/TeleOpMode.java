@@ -83,6 +83,7 @@ public class TeleOpMode extends OpMode {
     @Override
     public void loop() {
         telemetry_message();
+        input.update();
         gamepad_control();
         shootingSystem.process();
     }
