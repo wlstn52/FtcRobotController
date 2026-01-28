@@ -40,8 +40,10 @@ public class IntakeSystem {
         switch(direction){
             case FORWARD:
                 front++;
+                break;
             case REVERSE:
                 front--;
+                break;
         }
         if(front >= 3) front = 2;
         if(front < 0) front = 0;
