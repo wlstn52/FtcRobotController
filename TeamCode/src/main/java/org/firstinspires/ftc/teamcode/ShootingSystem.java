@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.teamcode.Robot_Configure.DEFAULT_LIFTING_ANGLE;
+import static org.firstinspires.ftc.teamcode.Robot_Configure.DELAY;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -16,8 +19,6 @@ public class ShootingSystem implements Task{
         SHOOTING,
     }
     Status status = Status.IDLE;
-    static final double DEFAULT_LIFTING_ANGLE = 10;
-    static final double DELAY = 1.5;
 
     ShootingSystem(DcMotor shootingMotor, Servo liftingServo, ElapsedTime timer){
         this.shootingMotor = shootingMotor;

@@ -130,7 +130,7 @@ public class TeleOpMode extends OpMode {
         }
         if(input.xPressed()){
             // 정렬 모터 turn on / turn off
-            if(intakeSystem.isMotorOn()){
+            if(!intakeSystem.isMotorOn()){
                 intakeSystem.startMotor(INTAKE_MOTOR_POWER);
             }else{
                 intakeSystem.stopMotor();
@@ -138,7 +138,7 @@ public class TeleOpMode extends OpMode {
         }
         if(input.yPressed()){
             // 발사 모터 turn on / turn off
-            if(shootingSystem.isMotorOn()){
+            if(!shootingSystem.isMotorOn()){
                 shootingSystem.startMotor(SHOOTING_MOTOR_POWER);
             }else{
                 shootingSystem.stopMotor();
