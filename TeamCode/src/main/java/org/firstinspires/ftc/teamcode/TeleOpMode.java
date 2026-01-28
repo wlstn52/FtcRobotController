@@ -174,8 +174,8 @@ class GamepadInput{
     private Gamepad gamepad;
     private int x, y, a, b;
     private int left_bumper, right_bumper;
-    GamepadInput(Gamepad gamepad){
-        this.gamepad = gamepad;
+    GamepadInput(Gamepad pad){
+        gamepad = pad;
         x = 0;
         y = 0;
         a = 0;
