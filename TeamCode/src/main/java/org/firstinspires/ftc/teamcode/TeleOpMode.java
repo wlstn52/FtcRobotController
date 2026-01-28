@@ -123,10 +123,10 @@ public class TeleOpMode extends OpMode {
             shootingSystem.shoot();
         }
         if(input.lbumperPressed() && !shootingSystem.isBusy()) {
-            intakeSystem.revolveSorting(Servo.Direction.FORWARD);
+            intakeSystem.revolveSorting(1);
         }
         if(input.rbumperPressed() && !shootingSystem.isBusy()) {
-            intakeSystem.revolveSorting(Servo.Direction.REVERSE);
+            intakeSystem.revolveSorting(-1);
         }
         if(input.xPressed()){
             // 정렬 모터 turn on / turn off
@@ -212,7 +212,7 @@ class GamepadInput{
             left_bumper = 0;
         }
 
-        if(gamepad.left_bumper){
+        if(gamepad.right_bumper){
             right_bumper++;
         }else{
             right_bumper = 0;

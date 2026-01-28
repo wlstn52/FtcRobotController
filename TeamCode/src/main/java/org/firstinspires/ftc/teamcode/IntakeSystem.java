@@ -36,16 +36,9 @@ public class IntakeSystem {
     }
 
     public boolean isMotorOn() { return motorOn; }
-    public void revolveSorting(Servo.Direction direction) {
-        switch(direction){
-            case FORWARD:
-                front++;
-                break;
-            case REVERSE:
-                front--;
-                break;
-        }
-        if(front >= 3) front = 2;
+    public void revolveSorting(int direction) {
+        front += direction;
+        if(front > 2) front = 2;
         if(front < 0) front = 0;
 
         sortingServo.setPosition(120.0 / 300 * front);
