@@ -1,0 +1,113 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+public class TeleOpMode extends OpMode {
+    private ElapsedTime runtime = new ElapsedTime();
+    private DcMotor backLeftDrive = null;
+    private DcMotor backRightDrive = null;
+    private DcMotor shootingMotor = null;
+    private DcMotor intakeMotor = null;
+
+    private Servo liftingServo = null;
+    private Servo sortingServo = null;
+
+    private ShootingSystem shootingSystem;
+    private IntakeSystem intakeSystem;
+
+
+    @Override
+    public void init(){
+        backLeftDrive = hardwareMap.get(DcMotor.class, "back_left_drive");
+        backRightDrive = hardwareMap.get(DcMotor.class, "back_right_drive");
+        shootingMotor = hardwareMap.get(DcMotor.class, "shooting_motor");
+        intakeMotor = hardwareMap.get(DcMotor.class, "intake_motor");
+        liftingServo = hardwareMap.get(Servo.class, "lifting_servo");
+        sortingServo = hardwareMap.get(Servo.class, "sorting_servo");
+
+        backLeftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        shootingSystem = new ShootingSystem(shootingMotor, liftingServo, runtime);
+        shootingSystem.init();
+
+        intakeSystem = new IntakeSystem(intakeMotor, sortingServo);
+        intakeSystem.init();
+    }
+
+    /**
+     * This method will be called repeatedly during the period between when
+     * the INIT button is pressed and when the START button is pressed (or the
+     * OpMode is stopped).
+     */
+    @Override
+    public void init_loop() {
+    }
+
+    /**
+     * This method will be called once, when the START button is pressed.
+     */
+    @Override
+    public void start() {
+        shootingSystem.startMotor(0.8);
+        intakeSystem.startMotor(0.5);
+        runtime.reset();
+    }
+
+    /**
+     * This method will be called repeatedly during the period between when
+     * the START button is pressed and when the OpMode is stopped.
+     */
+    @Override
+    public void loop() {
+        telemetry_message();
+        gamepad_control();
+        shootingSystem.process();
+    }
+
+    /**
+     * This method will be called once, when this OpMode is stopped.
+     * <p>
+     * Your ability to control hardware from this method will be limited.
+     */
+    @Override
+    public void stop() {
+        shootingSystem.stopMotor();
+        intakeSystem.stopMotor();
+        telemetry.addLine("Robot stopped");
+        telemetry.update();
+    }
+
+    void gamepad_control(){
+        double axial1   = -gamepad1.left_stick_y;
+        double axial2   =  -gamepad1.right_stick_y;
+
+        backLeftDrive.setPower(axial1);
+        backRightDrive.setPower(axial2);
+        if(gamepad1.a && !shootingSystem.isBusy()){
+            shootingSystem.shoot();
+        }
+        if(gamepad1.x && !shootingSystem.isBusy()) {
+            intakeSystem.revolveSorting(Servo.Direction.FORWARD);
+        }
+        if(gamepad1.y && !shootingSystem.isBusy()) {
+            intakeSystem.revolveSorting(Servo.Direction.REVERSE);
+        }
+    }
+    // drive hub 메세지
+    void telemetry_message(){
+        // 작동 시간
+        telemetry.addData("Status", "Run Time: " + runtime.toString());
+        telemetry.addLine("=System Status=");
+        telemetry.addData("Motor Power", String.format("Left: %4.2f Right: %4.2f", (float) backLeftDrive.getPower(), (float) backRightDrive.getPower()));
+        telemetry.addData("Shooting System", shootingSystem.status);
+        telemetry.addData("Intaking System", shootingSystem.status);
+        telemetry.addData("Front Slot", intakeSystem.getFront());
+
+        telemetry.update();
+    }
+}

@@ -29,10 +29,10 @@ public class ShootingSystem implements Task{
         liftingServo.setDirection(Servo.Direction.FORWARD);
     }
     // 발사 모터를 가동
-    public void motorStart(double power) {
+    public void startMotor(double power) {
         shootingMotor.setPower(power);
     }
-    public void motorStop(){
+    public void stopMotor(){
         shootingMotor.setPower(0);
     }
     // 발사 코드

@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 public class IntakeSystem {
     private Servo sortingServo;
+    private DcMotor intakeMotor;
     private double pos = 0;
     private int direction = 0;
     static final double MAX_POS     =  1.0;     // Maximum rotational position
@@ -13,18 +16,34 @@ public class IntakeSystem {
         Purple,
         GREEN
     };
-
-    public BallType[] drum = {BallType.EMPTY, BallType.EMPTY, BallType.EMPTY};
     public int front = 0;
-    IntakeSystem(Servo servo){
+    IntakeSystem(DcMotor intake_motor, Servo servo){
+        intakeMotor = intake_motor;
         sortingServo = servo;
     }
     public void init(){
-
+        intakeMotor.setDirection(DcMotor.Direction.FORWARD);
     }
-    public void intake(int color, boolean clockwise){
-        if(clockwise){
-
+    public int getFront(){
+        return front;
+    }
+    public void startMotor(double power){
+        intakeMotor.setPower(power);
+    }
+    public void stopMotor(){
+        intakeMotor.setPower(0);
+    }
+    public void revolveSorting(Servo.Direction direction) {
+        switch(direction){
+            case FORWARD:
+                front++;
+            case REVERSE:
+                front--;
         }
+        if(front >= 3) front = 3;
+        if(front < 0) front = 0;
+
+        sortingServo.setPosition(120.0 / 300 * front);
     }
+
 }
