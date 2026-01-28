@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.teamcode.Robot_Configure.INTAKE_MOTOR_POWER;
+
 import android.util.Size;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -67,8 +69,6 @@ public class TeleOpMode extends OpMode {
      */
     @Override
     public void start() {
-        shootingSystem.startMotor(0.8);
-        intakeSystem.startMotor(0.5);
         runtime.reset();
     }
 
@@ -112,30 +112,44 @@ public class TeleOpMode extends OpMode {
 
         backLeftDrive.setPower(axial1);
         backRightDrive.setPower(axial2);
-        if(gamepad1.a && !shootingSystem.isBusy()){
+        if(gamepad1.aWasPressed() && shootingSystem.isBusy()){
             shootingSystem.shoot();
         }
-        if(gamepad1.x && !shootingSystem.isBusy()) {
+        if(gamepad1.leftBumperWasPressed() && shootingSystem.isBusy()) {
             intakeSystem.revolveSorting(Servo.Direction.FORWARD);
         }
-        if(gamepad1.y && !shootingSystem.isBusy()) {
+        if(gamepad1.rightBumperWasPressed() && shootingSystem.isBusy()) {
             intakeSystem.revolveSorting(Servo.Direction.REVERSE);
         }
-        if(gamepad1.b){
-            // 에이프릴 태그를 기반으로 하여 위치 조정
-            // b를 한 번 더 누르면 취소 되도록
-
-
+        if(gamepad1.xWasPressed()){
+            // 정렬 모터 turn on / turn off
+            if(intakeSystem.isMotorOn()){
+                intakeSystem.startMotor(INTAKE_MOTOR_POWER);
+            }else{
+                intakeSystem.stopMotor();
+            }
+        }
+        if(gamepad1.yWasPressed()){
+            // 발사 모터 turn on / turn off
+            if(shootingSystem.isMotorOn()){
+                shootingSystem.startMotor(INTAKE_MOTOR_POWER);
+            }else{
+                shootingSystem.stopMotor();
+            }
         }
     }
     // drive hub 메세지
     void telemetry_message(){
+        String shootingMotorStatus = shootingSystem.isMotorOn() ? "ON" : "OFF";
+        String intakingMotorStatus = intakeSystem.isMotorOn() ? "ON" : "OFF";
         // 작동 시간
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addLine("=System Status=");
         telemetry.addData("Motor Power", String.format("Left: %4.2f Right: %4.2f", (float) backLeftDrive.getPower(), (float) backRightDrive.getPower()));
         telemetry.addData("Shooting System", shootingSystem.status);
+        telemetry.addData("Shooting Motor", shootingMotorStatus);
         telemetry.addData("Intaking System", shootingSystem.status);
+        telemetry.addData("Intaking Motor", intakingMotorStatus);
         telemetry.addData("Front Slot", intakeSystem.getFront());
 
         telemetry.update();

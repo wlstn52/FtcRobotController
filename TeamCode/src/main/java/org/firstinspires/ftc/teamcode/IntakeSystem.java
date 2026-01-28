@@ -6,8 +6,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class IntakeSystem {
     private Servo sortingServo;
     private DcMotor intakeMotor;
-    private double pos = 0;
-    private int direction = 0;
     static final double MAX_POS     =  1.0;     // Maximum rotational position
     static final double MIN_POS     =  0.0;     // Minimum rotational position
 
@@ -22,7 +20,7 @@ public class IntakeSystem {
         sortingServo = servo;
     }
     public void init(){
-        intakeMotor.setDirection(DcMotor.Direction.FORWARD);
+        intakeMotor.setDirection(DcMotor.Direction.REVERSE);
     }
     public int getFront(){
         return front;
@@ -33,6 +31,8 @@ public class IntakeSystem {
     public void stopMotor(){
         intakeMotor.setPower(0);
     }
+
+    public boolean isMotorOn() { return intakeMotor.getPower() > 0.0; }
     public void revolveSorting(Servo.Direction direction) {
         switch(direction){
             case FORWARD:
@@ -40,7 +40,7 @@ public class IntakeSystem {
             case REVERSE:
                 front--;
         }
-        if(front >= 3) front = 3;
+        if(front >= 3) front = 2;
         if(front < 0) front = 0;
 
         sortingServo.setPosition(120.0 / 300 * front);
