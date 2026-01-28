@@ -37,8 +37,7 @@ public class TeleOpMode extends OpMode {
     private VisionPortal visionPortal;
     private AprilTagProcessor aprilTagProcessor;
 
-    private final GamepadInput input = new GamepadInput(gamepad1);
-
+    private GamepadInput input;
     @Override
     public void init(){
         backLeftDrive = hardwareMap.get(DcMotor.class, "back_left_drive");
@@ -57,6 +56,9 @@ public class TeleOpMode extends OpMode {
 
         intakeSystem = new IntakeSystem(intakeMotor, sortingServo);
         intakeSystem.init();
+
+        input = new GamepadInput(gamepad1);
+
     }
 
     /**
@@ -164,7 +166,6 @@ public class TeleOpMode extends OpMode {
             if(detection.metadata == null) continue;
             if(detection.id != 24 && detection.id != 20) continue; // 우리가 원하는 건, 골대를 보고 위치를 잡는 것.
 
-
         }
     }
 }
@@ -172,7 +173,7 @@ public class TeleOpMode extends OpMode {
 // reference : https://github.com/cporter/ftc_app/blob/vv/autonomous-testing/TeamCode/src/main/java/com/suitbots/vv/Controller.java
 class GamepadInput{
     private Gamepad gamepad;
-    private int x, y, a, b;
+    private int x = 0, y = 0, a = 0, b = 0;
     private int left_bumper, right_bumper;
     GamepadInput(Gamepad pad){
         gamepad = pad;
