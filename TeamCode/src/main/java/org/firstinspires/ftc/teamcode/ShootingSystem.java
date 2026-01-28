@@ -58,7 +58,7 @@ public class ShootingSystem implements Task{
         }
     }
     public boolean isBusy(){
-        return status == Status.IDLE;
+        return status != Status.IDLE;
     }
     public boolean isMotorOn() { return motorOn; }
 }
