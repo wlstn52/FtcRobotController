@@ -2,6 +2,9 @@ package org.firstinspires.ftc.teamcode;
 
 import static org.firstinspires.ftc.teamcode.Robot_Configure.INTAKE_MOTOR_POWER;
 import static org.firstinspires.ftc.teamcode.Robot_Configure.SHOOTING_MOTOR_POWER;
+import static org.firstinspires.ftc.teamcode.Robot_Configure.SHOOT_DISTANCE;
+import static org.firstinspires.ftc.teamcode.Robot_Configure.WHEEL_ENCODER_PPR;
+import static org.firstinspires.ftc.teamcode.Robot_Configure.WHEEL_RADIUS;
 
 import android.util.Size;
 
@@ -20,6 +23,11 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 @TeleOp(name="TeleOp Mode", group = "TeleOp")
 public class TeleOpMode extends OpMode {
+    enum Status{
+        MANUAL,
+        AUTO
+    }
+    Status status;
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor backLeftDrive = null;
     private DcMotor backRightDrive = null;
@@ -36,8 +44,10 @@ public class TeleOpMode extends OpMode {
     private WebcamName webcam;
     private VisionPortal visionPortal;
     private AprilTagProcessor aprilTagProcessor;
-
     private GamepadInput input;
+
+    private double dist;
+
     @Override
     public void init(){
         backLeftDrive = hardwareMap.get(DcMotor.class, "back_left_drive");
@@ -58,6 +68,9 @@ public class TeleOpMode extends OpMode {
         intakeSystem.init();
 
         input = new GamepadInput(gamepad1);
+
+        visionInit();
+        status = Status.MANUAL;
 
     }
 
@@ -84,10 +97,15 @@ public class TeleOpMode extends OpMode {
      */
     @Override
     public void loop() {
-        telemetry_message();
         input.update();
         gamepad_control();
         shootingSystem.process();
+        if(status == Status.AUTO && !backLeftDrive.isBusy() && !backRightDrive.isBusy()){
+            status = Status.MANUAL;
+            backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+        telemetry_message();
     }
 
     /**
@@ -114,11 +132,14 @@ public class TeleOpMode extends OpMode {
     }
 
     void gamepad_control(){
-        double axial1   =  -gamepad1.left_stick_y;
-        double axial2   =  -gamepad1.right_stick_y;
+        if(status == Status.MANUAL) {
+            double axial1 = -gamepad1.left_stick_y;
+            double axial2 = -gamepad1.right_stick_y;
 
-        backLeftDrive.setPower(axial1);
-        backRightDrive.setPower(axial2);
+            backLeftDrive.setPower(axial1);
+            backRightDrive.setPower(axial2);
+        }
+
         if(input.aPressed() && !shootingSystem.isBusy()){
             shootingSystem.shoot();
         }
@@ -144,13 +165,36 @@ public class TeleOpMode extends OpMode {
                 shootingSystem.stopMotor();
             }
         }
+        if(input.bPressed()){
+            if(status == Status.AUTO){
+                status = Status.MANUAL;
+                backRightDrive.setPower(0);
+                backLeftDrive.setPower(0);
+                backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }else{
+                dist = getMovement();
+                if(dist != -1000.0) {
+                    status = Status.AUTO;
+                    backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                    int ticks = (int) ((dist * WHEEL_ENCODER_PPR) / (WHEEL_RADIUS * 2 * Math.PI));
+                    backLeftDrive.setTargetPosition(ticks + backLeftDrive.getCurrentPosition());
+                    backRightDrive.setTargetPosition(ticks + backRightDrive.getCurrentPosition());
+                    backLeftDrive.setPower(0.8);
+                    backRightDrive.setPower(0.8);
+
+                }
+            }
+        }
     }
     // drive hub 메세지
     void telemetry_message(){
         String shootingMotorStatus = shootingSystem.isMotorOn() ? "ON" : "OFF";
         String intakingMotorStatus = intakeSystem.isMotorOn() ? "ON" : "OFF";
         // 작동 시간
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
+        telemetry.addData("Status", status);
         telemetry.addLine("=System Status=");
         telemetry.addData("Motor Power", String.format("Left: %4.2f Right: %4.2f", (float) backLeftDrive.getPower(), (float) backRightDrive.getPower()));
         telemetry.addData("Shooting System", shootingSystem.status);
@@ -161,13 +205,14 @@ public class TeleOpMode extends OpMode {
         telemetry.update();
     }
 
-    void getMovement(){
+    double getMovement(){
         for(AprilTagDetection detection : aprilTagProcessor.getDetections()){
             if(detection.metadata == null) continue;
             if(detection.id != 24 && detection.id != 20) continue; // 우리가 원하는 건, 골대를 보고 위치를 잡는 것.
-
+            return detection.ftcPose.y - SHOOT_DISTANCE;
         }
-    }
+        return -1000;
+    };
 }
 
 // reference : https://github.com/cporter/ftc_app/blob/vv/autonomous-testing/TeamCode/src/main/java/com/suitbots/vv/Controller.java

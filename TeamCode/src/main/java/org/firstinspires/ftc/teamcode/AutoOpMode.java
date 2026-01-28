@@ -73,7 +73,6 @@ public class AutoOpMode extends OpMode {
         backRightDrive = hardwareMap.get(DcMotor.class, "back_right_drive");
         shootingMotor = hardwareMap.get(DcMotor.class, "shooting_motor");
         intakeMotor = hardwareMap.get(DcMotor.class, "intake_motor");
-
         sortingServo = hardwareMap.get(Servo.class, "sorting_servo");
         liftingServo = hardwareMap.get(Servo.class, "lifting");
 
@@ -87,15 +86,6 @@ public class AutoOpMode extends OpMode {
 
         sortingServo.setDirection(Servo.Direction.FORWARD);
         sortingServo.setDirection(Servo.Direction.FORWARD);
-
-        colorSensor = new PredominantColorProcessor.Builder()
-                .setRoi(ImageRegion.asUnityCenterCoordinates(-0.1, 0.1, 0.1, -0.1))
-                .setSwatches(
-                        PredominantColorProcessor.Swatch.ARTIFACT_GREEN,
-                        PredominantColorProcessor.Swatch.ARTIFACT_PURPLE,
-                        PredominantColorProcessor.Swatch.BLACK
-                )
-                .build();
 
         VisionPortal.Builder builder = new VisionPortal.Builder();
         builder.enableLiveView(true);
