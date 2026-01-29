@@ -42,7 +42,7 @@ public class ShootingSystem implements Task{
     // 발사 코드
     public void shoot(){
         if(status != Status.IDLE) return;
-        liftingServo.setPosition(DEFAULT_LIFTING_ANGLE / 300 );
+        liftingServo.setPosition(DEFAULT_LIFTING_ANGLE / 300.0);
 
         status = Status.SHOOTING;
         shooting_time = runtime.seconds();

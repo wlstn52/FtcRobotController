@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.teamcode.Robot_Configure.WHEEL_ENCODER_PPR;
+import static org.firstinspires.ftc.teamcode.Robot_Configure.WHEEL_RADIUS;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -27,14 +30,19 @@ public class TwoDrive extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        backRightDrive.setPower(1);
-        backLeftDrive.setPower(1);
+        backRightDrive.setPower(0.8);
+        backLeftDrive.setPower(0.8);
 
-        sleep(1000 * 5);
+        int moveTicks = (int) ((7.87 * WHEEL_ENCODER_PPR) / (WHEEL_RADIUS * 2 * Math.PI));
+        backRightDrive.setTargetPosition(moveTicks  + backLeftDrive.getCurrentPosition());
+        backLeftDrive.setTargetPosition(moveTicks  + backRightDrive.getCurrentPosition());
+
+        backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         telemetry.addData("Status", "test done");
         telemetry.update();
-        sleep(100);
+        sleep(20000);
     }
 
 }

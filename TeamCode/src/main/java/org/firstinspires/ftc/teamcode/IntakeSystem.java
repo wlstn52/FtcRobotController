@@ -21,7 +21,7 @@ public class IntakeSystem {
         sortingServo = servo;
     }
     public void init(){
-        intakeMotor.setDirection(DcMotor.Direction.REVERSE);
+        intakeMotor.setDirection(DcMotor.Direction.FORWARD);
     }
     public int getFront(){
         return front;
@@ -38,10 +38,10 @@ public class IntakeSystem {
     public boolean isMotorOn() { return motorOn; }
     public void revolveSorting(int direction) {
         front += direction;
-        if(front > 2) front = 2;
+        if(front > 5) front = 5;
         if(front < 0) front = 0;
 
-        sortingServo.setPosition(120.0 / 300 * front);
+        sortingServo.setPosition(60.0 / 300 * front);
     }
 
 }
