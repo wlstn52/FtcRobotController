@@ -48,7 +48,6 @@ public class AprilTagDistanceKeeper extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            double drive = 0, strafe = 0, turn = 0;
             boolean targetFound = false;
             AprilTagDetection desiredTag = null;
 
@@ -94,32 +93,7 @@ public class AprilTagDistanceKeeper extends LinearOpMode {
                 leftDrive.setPower(0);
                 rightDrive.setPower(0);
             }
-
-            // 속도 제한 및 구동
-            drive  = Math.max(Math.min(drive, MAX_AUTO_SPEED), -MAX_AUTO_SPEED);
-            strafe = Math.max(Math.min(strafe, MAX_AUTO_SPEED), -MAX_AUTO_SPEED);
-            turn   = Math.max(Math.min(turn, MAX_AUTO_SPEED), -MAX_AUTO_SPEED);
-
-            moveRobot(drive, strafe, turn);
             telemetry.update();
         }
-    }
-
-    // 메카넘 휠 구동 함수
-    public void moveRobot(double x, double y, double yaw) {
-        double lb = x - y + yaw;
-        double rb = x + y - yaw;
-        double lf = x + y + yaw;
-        double rf = x - y - yaw;
-
-        double max = Math.max(Math.abs(lb), Math.max(Math.abs(rb), Math.max(Math.abs(lf), Math.abs(rf))));
-        if (max > 1.0) {
-            lb /= max; rb /= max; lf /= max; rf /= max;
-        }
-
-        leftBackDrive.setPower(lb);
-        rightBackDrive.setPower(rb);
-        leftFrontDrive.setPower(lf);
-        rightFrontDrive.setPower(rf);
     }
 }
