@@ -10,6 +10,12 @@ public class IntakeSystem {
     static final double MAX_POS     =  1.0;     // Maximum rotational position
     static final double MIN_POS     =  0.0;     // Minimum rotational position
 
+    // index [0, 2]
+    public void setSorting(int index) {
+        front = index * 2;
+        sortingServo.setPosition((120 * index) / 300.0);
+    }
+
     public enum BallType{
         EMPTY,
         Purple,
@@ -22,9 +28,13 @@ public class IntakeSystem {
     }
     public void init(){
         intakeMotor.setDirection(DcMotor.Direction.FORWARD);
+        sortingServo.setPosition(0.0);
     }
     public int getFront(){
         return front;
+    }
+    public boolean canShoot(){
+        return front % 2 == 0;
     }
     public void startMotor(double power){
         motorOn = true;

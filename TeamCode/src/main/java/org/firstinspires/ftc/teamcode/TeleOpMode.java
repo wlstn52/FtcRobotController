@@ -103,7 +103,6 @@ public class TeleOpMode extends OpMode {
                 switchToManual();
             }
         }
-
         telemetry_message();
     }
 
@@ -208,6 +207,7 @@ public class TeleOpMode extends OpMode {
         telemetry.addData("Shooting System", shootingSystem.status);
         telemetry.addData("Shooting Motor", shootingMotorStatus);
         telemetry.addData("Intaking Motor", intakingMotorStatus);
+        telemetry.addData("Front Slot", intakeSystem.getFront());
         telemetry.update();
     }
 
@@ -217,8 +217,7 @@ public class TeleOpMode extends OpMode {
             if (detection.metadata != null) {
                 // ID 24 또는 20 탐지
                 if (detection.id == 24 || detection.id == 20) {
-                    // ftcPose.y는 로봇 정면 방향의 거리입니다.
-                    double d = detection.ftcPose.y - SHOOT_DISTANCE;
+                    double d = detection.ftcPose.range - SHOOT_DISTANCE;
                     return Math.sqrt(d*d - (0.52*39.37) * (0.52*39.37));
                 }
             }
