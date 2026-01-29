@@ -135,7 +135,7 @@ public class TeleOpMode extends OpMode {
         }
 
         // 슈팅 및 인테이크 제어
-        if (input.aPressed() && !shootingSystem.isBusy()) {
+        if (input.aPressed() && !shootingSystem.isBusy() && intakeSystem.canShoot()) {
             shootingSystem.shoot();
         }
         if (input.lbumperPressed() && !shootingSystem.isBusy()) {
