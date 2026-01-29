@@ -55,6 +55,7 @@ public class testCam extends LinearOpMode {
 
         visionPortal = builder.build();
         visionPortal.resumeStreaming();
+        visionPortal.resumeLiveView();
     }
 
     private void telemetryAprilTag() {
