@@ -25,10 +25,12 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.firstinspires.ftc.vision.opencv.PredominantColorProcessor;
 
-// RED
-@Autonomous(name="RedAutoOpMode", group="Auto")
-public class RedAutoOpMode extends LinearOpMode {
-    final static int TEAM_ID = 24; // RED
+import java.math.MathContext;
+
+// BLUE
+@Autonomous(name="BlueAutoOpMode", group="Auto")
+public class BlueAutoOpMode extends LinearOpMode {
+    final static int TEAM_ID = 20; // BLUE
     private ElapsedTime runtime = new ElapsedTime();
 //    private MotorSystem motorSystem;
 
@@ -58,17 +60,17 @@ public class RedAutoOpMode extends LinearOpMode {
     private boolean isWaiting = false;
     private double delay = 0;
     private int TagId = 21;
-    /*
-        private void initApril(){
-            aprilTag = new AprilTagProcessor.Builder().setCameraPose(cameraPosition, cameraOrientation).build();
-            VisionPortal.Builder builder = new VisionPortal.Builder();
-            builder.enableLiveView(true);
-            builder.addProcessor(aprilTag);
+/*
+    private void initApril(){
+        aprilTag = new AprilTagProcessor.Builder().setCameraPose(cameraPosition, cameraOrientation).build();
+        VisionPortal.Builder builder = new VisionPortal.Builder();
+        builder.enableLiveView(true);
+        builder.addProcessor(aprilTag);
 
-            visionPortal = builder.build();
-            //visionPortal.resumeStreaming();
-        }
-    */
+        visionPortal = builder.build();
+        //visionPortal.resumeStreaming();
+    }
+*/
     @Override
     public void runOpMode(){
         // Hardware embedding
@@ -128,7 +130,7 @@ public class RedAutoOpMode extends LinearOpMode {
         // DRIVING
         drive_distance(ARENA_EDGE, ARENA_EDGE, 0.7, 0.7);
 
-        turn(45);
+        turn(-45);
 
         double d = ARENA_EDGE * Math.sqrt(0.5) - SHOOT_DISTANCE;
         drive_distance(d, d, 0.7, 0.7);
@@ -152,7 +154,7 @@ public class RedAutoOpMode extends LinearOpMode {
 
         // ESCAPE
         drive_distance(-d, -d, 0.7, 0.7);
-        turn(-45);
+        turn(45);
         drive_distance(-10, -10, -0.7, -0.7);
     }
 

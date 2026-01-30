@@ -67,8 +67,8 @@ public class TeleOpMode extends OpMode {
         // 엔코더 초기화
         backLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         shootingSystem = new ShootingSystem(shootingMotor, liftingServo, runtime);
         shootingSystem.init();
@@ -152,8 +152,8 @@ public class TeleOpMode extends OpMode {
             if (!shootingSystem.isMotorOn()) shootingSystem.startMotor(SHOOTING_MOTOR_POWER);
             else shootingSystem.stopMotor();
         }
-
         // B 버튼: 자동 정렬 시작 또는 취소
+        /*
         if (input.bPressed()) {
             if (status == Status.AUTO) {
                 // 이동 중 B를 누르면 즉시 중단
@@ -166,6 +166,8 @@ public class TeleOpMode extends OpMode {
                 }
             }
         }
+
+         */
     }
 
     // 자동 주행 시작 설정

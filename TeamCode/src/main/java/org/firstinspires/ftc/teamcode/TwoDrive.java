@@ -33,7 +33,7 @@ public class TwoDrive extends LinearOpMode {
         backRightDrive.setPower(0.8);
         backLeftDrive.setPower(0.8);
 
-        int moveTicks = (int) ((7.87 * WHEEL_ENCODER_PPR) / (WHEEL_RADIUS * 2 * Math.PI));
+        int moveTicks = (int) ((30 * WHEEL_ENCODER_PPR) / (WHEEL_RADIUS * 2 * Math.PI));
         backRightDrive.setTargetPosition(moveTicks  + backLeftDrive.getCurrentPosition());
         backLeftDrive.setTargetPosition(moveTicks  + backRightDrive.getCurrentPosition());
 
